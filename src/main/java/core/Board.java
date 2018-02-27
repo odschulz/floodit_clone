@@ -6,26 +6,33 @@ import core.color.TileColorFactory;
 import java.util.Iterator;
 
 public class Board implements Iterable<Tile> {
-    final private int sideCount;
+    final private int xCount;
+    final private int yCount;
+
     private TileColorFactory colorFactory;
     final private Tile[] tiles;
     private TileColor currentColor;
 
-    public Board(int sideCount, TileColorFactory colorFactory) {
-        // @todo validate size.
-        this.sideCount = sideCount;
-        this.tiles = new Tile[sideCount * sideCount];
+    public Board(int x, int y, TileColorFactory colorFactory) {
+        // @todo Refactor to make it work with different x and y.
+        this.xCount = x;
+        this.yCount = y;
+        this.tiles = new Tile[x * y];
         this.setColorFactory(colorFactory);
         this.initBoard();
     }
 
-    public int getSideCount() {
-        return this.sideCount;
+    public int getXCount() {
+        return this.xCount;
+    }
+
+    public int getYCount() {
+        return this.yCount;
     }
 
     public int getSize() {
-        int sideCount = this.getSideCount();
-        return sideCount * sideCount;
+        int sideCount = this.getXCount();
+        return this.getXCount() * this.getYCount();
     }
 
     public TileColorFactory getColorFactory() {
@@ -48,6 +55,14 @@ public class Board implements Iterable<Tile> {
         this.setCurrentColor(color);
     }
 
+    public int getTileX(Tile tile) {
+        return tile.getPosition() % this.getXCount() + 1;
+    }
+
+    public int getTileY(Tile tile) {
+        return tile.getPosition() / this.getYCount() + 1;
+    }
+
     private void initBoard() {
         for (int i = 0; i < this.tiles.length; i++) {
             TileColor color = this.getColorFactory().getRandomTileColor();
@@ -62,7 +77,7 @@ public class Board implements Iterable<Tile> {
     }
 
     private Tile getNeighbouringTile(int index, NeighbourPoistion poistion) {
-        int sideCount = this.getSideCount();
+        int sideCount = this.getXCount();
         int neighboutIndex = -1;
         switch (poistion) {
             case TOP:

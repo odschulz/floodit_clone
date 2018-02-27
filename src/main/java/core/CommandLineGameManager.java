@@ -41,7 +41,7 @@ public class CommandLineGameManager {
     public void startGame() {
         int size = 4;
         boolean completed = false;
-        Board board = new Board(size, AbstractTileColorFactory.getFactory());
+        Board board = new Board(size, size, AbstractTileColorFactory.getFactory());
         Map<String, TileColor> colorCommandMapping = new HashMap<>();
         // @todo Command handling and difficulty manager.
         for (TileColor color : AbstractTileColorFactory.getFactory().getAllTileColors()) {
