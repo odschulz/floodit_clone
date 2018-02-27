@@ -5,7 +5,6 @@ import core.Tile;
 import core.color.AbstractTileColorFactory;
 import core.color.TileColor;
 import javafx.application.Application;
-import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.*;
@@ -25,39 +24,6 @@ public class GUI extends Application {
     private Board board;
     private Scene scene;
 
-    private Parent drawBoard() {
-        Pane root = new Pane();
-        root.setPrefSize(WIDTH, HEIGHT);
-
-        for (Tile tile : board) {
-//            TileStackPane tileStackPane = new TileStackPane(tile);
-            StackPane pane = new StackPane();
-            Color color = Color.rgb(0, 0, 0, 0.35);
-            BackgroundFill fill = new BackgroundFill(color, CornerRadii.EMPTY,
-                    Insets.EMPTY);
-            Background background = new Background(fill);
-            pane.setStyle("-fx-background: #FFFFFF;");
-            Rectangle border = new Rectangle(BORDER_SIZE, BORDER_SIZE);
-            border.setStroke(Color.LIGHTGRAY);
-            pane.getChildren().addAll(border);
-
-            pane.setTranslateX(board.getTileX(tile) * TILE_SIZE);
-            pane.setTranslateY(board.getTileY(tile) * TILE_SIZE);
-
-            pane. setOnMouseClicked(e -> this.makeMove(tile));
-
-
-            root.getChildren().add(pane);
-        }
-
-        return root;
-    }
-
-    private void makeMove(Tile tile) {
-        board.makeMove(tile.getColor());
-        scene.setRoot(drawBoard());
-    }
-
     @Override
     public void start(Stage stage) throws Exception {
         board = new Board(X_TILES, Y_TILES, AbstractTileColorFactory.getFactory());
@@ -69,5 +35,34 @@ public class GUI extends Application {
 
     public static void launchGame(String[] args) {
         launch(args);
+    }
+
+    private Parent drawBoard() {
+        Pane root = new Pane();
+        root.setPrefSize(WIDTH, HEIGHT);
+
+        for (Tile tile : board) {
+            StackPane pane = new StackPane();
+            TileColor tileColor = tile.getColor();
+            Color color = Color.rgb(tileColor.getRed(), tileColor.getGreen(), tileColor.getBlue(), 0.8);
+            Rectangle border = new Rectangle(BORDER_SIZE, BORDER_SIZE, color);
+            // @todo Fix border.
+            border.setStroke(Color.LIGHTGRAY);
+            pane.getChildren().addAll(border);
+
+            pane.setTranslateX(board.getTileX(tile) * TILE_SIZE);
+            pane.setTranslateY(board.getTileY(tile) * TILE_SIZE);
+
+            pane. setOnMouseClicked(e -> this.makeMove(tile));
+
+            root.getChildren().add(pane);
+        }
+
+        return root;
+    }
+
+    private void makeMove(Tile tile) {
+        board.makeMove(tile.getColor());
+        scene.setRoot(drawBoard());
     }
 }
