@@ -1,14 +1,14 @@
-package core.color;
+package ui.gui.fills;
 
-import core.interfaces.TileColor;
+import core.interfaces.TileFill;
 
 import java.util.Random;
 
-public class EnumTileColorGenerator extends AbstractTileColorGenerator {
+public class TileFillGeneratorGUIColor extends AbstractTileFillGeneratorGUI {
 
     private Random random;
 
-    EnumTileColorGenerator() {
+    TileFillGeneratorGUIColor() {
         this.setRandom(new Random());
     }
 
@@ -21,14 +21,14 @@ public class EnumTileColorGenerator extends AbstractTileColorGenerator {
     }
 
     @Override
-    public TileColor getRandomTileColor() {
-        TileColorEnum[] colors = TileColorEnum.values();
+    public TileFill getRandomTileColor() {
+        TileFillColor[] colors = TileFillColor.values();
         int ordinal = this.random.nextInt(colors.length);
         return colors[ordinal];
     }
 
     @Override
-    public TileColor[] getAllTileColors() {
-        return TileColorEnum.values();
+    public TileFill[] getAllTileColors() {
+        return TileFillColor.values();
     }
 }

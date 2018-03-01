@@ -1,7 +1,7 @@
 package core;
 
-import core.interfaces.TileColor;
-import core.interfaces.TileColorGenerator;
+import core.interfaces.TileFill;
+import core.interfaces.TileFillGenerator;
 
 import java.util.Iterator;
 
@@ -9,16 +9,16 @@ public class Board implements Iterable<Tile> {
     final private int xCount;
     final private int yCount;
 
-    private TileColorGenerator colorFactory;
+    private TileFillGenerator fillGenerator;
     final private Tile[] tiles;
-    private TileColor currentColor;
+    private TileFill currentFill;
 
-    public Board(int x, int y, TileColorGenerator colorFactory) {
+    public Board(int x, int y, TileFillGenerator fillGenerator) {
         // @todo Refactor to make it work with different x and y.
         this.xCount = x;
         this.yCount = y;
         this.tiles = new Tile[x * y];
-        this.setColorFactory(colorFactory);
+        this.setFillGenerator(fillGenerator);
         this.initBoard();
     }
 
@@ -34,24 +34,24 @@ public class Board implements Iterable<Tile> {
         return this.getXCount() * this.getYCount();
     }
 
-    public TileColorGenerator getColorFactory() {
-        return this.colorFactory;
+    public TileFillGenerator getFillGenerator() {
+        return this.fillGenerator;
     }
 
-    private void setColorFactory(TileColorGenerator colorFactory) {
-        this.colorFactory = colorFactory;
+    private void setFillGenerator(TileFillGenerator fillGenerator) {
+        this.fillGenerator = fillGenerator;
     }
 
-    public TileColor getCurrentColor() {
-        return this.currentColor;
+    public TileFill getCurrentFill() {
+        return this.currentFill;
     }
 
-    private void setCurrentColor(TileColor currentColor) {
-        this.currentColor = currentColor;
+    private void setCurrentFill(TileFill currentFill) {
+        this.currentFill = currentFill;
     }
 
-    public void makeMove(TileColor color) {
-        this.setCurrentColor(color);
+    public void makeMove(TileFill color) {
+        this.setCurrentFill(color);
     }
 
     public int getTileX(Tile tile) {
@@ -64,11 +64,11 @@ public class Board implements Iterable<Tile> {
 
     private void initBoard() {
         for (int i = 0; i < this.tiles.length; i++) {
-            TileColor color = this.getColorFactory().getRandomTileColor();
+            TileFill color = this.getFillGenerator().getRandomTileColor();
 
             boolean captured = false;
             if (i == 0) {
-                this.setCurrentColor(color);
+                this.setCurrentFill(color);
                 captured = true;
             }
             this.tiles[i] = new Tile(i, color, captured);
@@ -130,16 +130,16 @@ public class Board implements Iterable<Tile> {
         @Override
         public Tile next() {
             Tile currentTile = tiles[this.index];
-            TileColor currentColor = getCurrentColor();
+            TileFill currentFill = getCurrentFill();
             if (currentTile.isCaptured()) {
-                currentTile.setColor(currentColor);
+                currentTile.setFill(currentFill);
             } else {
                 for (NeighbourPoistion position : NeighbourPoistion.values()) {
                     Tile neighbourTile = getNeighbouringTile(this.index, position);
                     if (neighbourTile != null &&
                             neighbourTile.isCaptured() &&
-                            currentTile.getColor() == currentColor) {
-                        currentTile.setColor(currentColor);
+                            currentTile.getFill() == currentFill) {
+                        currentTile.setFill(currentFill);
                         currentTile.setCaptured(true);
                         break;
                     }

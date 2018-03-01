@@ -1,4 +1,4 @@
-package io;
+package ui.cli.interfaces;
 
 public interface OutputWriter {
     void write(String output);

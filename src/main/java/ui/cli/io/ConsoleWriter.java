@@ -1,4 +1,6 @@
-package io;
+package ui.cli.io;
+
+import ui.cli.interfaces.OutputWriter;
 
 public class ConsoleWriter implements OutputWriter {
     @Override

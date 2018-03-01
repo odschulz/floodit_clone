@@ -2,12 +2,14 @@ package ui.cli;
 
 import core.Board;
 import core.Tile;
-import core.color.AbstractTileColorGenerator;
-import core.interfaces.TileColor;
-import io.ConsoleReader;
-import io.ConsoleWriter;
-import io.InputReader;
-import io.OutputWriter;
+import core.interfaces.TileFillGenerator;
+import ui.cli.fills.AbstractTileFillGeneratorCLI;
+import ui.gui.fills.AbstractTileFillGeneratorGUI;
+import core.interfaces.TileFill;
+import ui.cli.io.ConsoleReader;
+import ui.cli.io.ConsoleWriter;
+import ui.cli.interfaces.InputReader;
+import ui.cli.interfaces.OutputWriter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -43,11 +45,12 @@ public class CLIManager {
     public void startGame() {
         int size = 4;
         boolean completed = false;
-        Board board = new Board(size, size, AbstractTileColorGenerator.getFactory());
-        Map<String, TileColor> colorCommandMapping = new HashMap<>();
+        TileFillGenerator fillGenerator = AbstractTileFillGeneratorCLI.getFactory();
+        Board board = new Board(size, size, fillGenerator);
+        Map<String, TileFill> colorCommandMapping = new HashMap<>();
         // @todo Command handling and difficulty manager.
-        for (TileColor color : AbstractTileColorGenerator.getFactory().getAllTileColors()) {
-            colorCommandMapping.put(color.toString(), color);
+        for (TileFill fill : fillGenerator.getAllTileColors()) {
+            colorCommandMapping.put(fill.getValue(), fill);
         }
 
         while (true) {
@@ -57,7 +60,7 @@ public class CLIManager {
                 this.writer.writeLine("Harasho, you get kebeb!");
                 break;
             }
-            this.writer.writeLine("Please choose a color by typing the corresponding letter. To exit type: " + EXIT_COMMAND);
+            this.writer.writeLine("Please choose a fills by typing the corresponding letter. To exit type: " + EXIT_COMMAND);
             String command = reader.readLine();
 
             if (command.equals(EXIT_COMMAND)) {
@@ -75,22 +78,22 @@ public class CLIManager {
     }
 
     private boolean drawBoard(Board board, int size) {
-        TileColor color = null;
+        TileFill tileFill = null;
         boolean completed = true;
         for (Tile tile : board) {
             if (tile.getPosition() != 0 && tile.getPosition() % size == 0) {
                 this.writer.writeLine("");
             }
 
-            if (color != null && completed && color != tile.getColor()) {
+            if (tileFill != null && completed && tileFill != tile.getFill()) {
                 completed = false;
             }
 
-            if (color == null) {
-                color = tile.getColor();
+            if (tileFill == null) {
+                tileFill = tile.getFill();
             }
 
-            this.writer.write(String.format("%1$" + 3 + "s", tile.getColor()));
+            this.writer.write(String.format("%1$" + 3 + "s", tile.getFill().getValue()));
         }
 
         this.writer.writeLine("");
