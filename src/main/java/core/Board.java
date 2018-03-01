@@ -1,7 +1,7 @@
 package core;
 
-import core.color.TileColor;
-import core.color.TileColorFactory;
+import core.interfaces.TileColor;
+import core.interfaces.TileColorGenerator;
 
 import java.util.Iterator;
 
@@ -9,11 +9,11 @@ public class Board implements Iterable<Tile> {
     final private int xCount;
     final private int yCount;
 
-    private TileColorFactory colorFactory;
+    private TileColorGenerator colorFactory;
     final private Tile[] tiles;
     private TileColor currentColor;
 
-    public Board(int x, int y, TileColorFactory colorFactory) {
+    public Board(int x, int y, TileColorGenerator colorFactory) {
         // @todo Refactor to make it work with different x and y.
         this.xCount = x;
         this.yCount = y;
@@ -31,15 +31,14 @@ public class Board implements Iterable<Tile> {
     }
 
     public int getSize() {
-        int sideCount = this.getXCount();
         return this.getXCount() * this.getYCount();
     }
 
-    public TileColorFactory getColorFactory() {
+    public TileColorGenerator getColorFactory() {
         return this.colorFactory;
     }
 
-    private void setColorFactory(TileColorFactory colorFactory) {
+    private void setColorFactory(TileColorGenerator colorFactory) {
         this.colorFactory = colorFactory;
     }
 

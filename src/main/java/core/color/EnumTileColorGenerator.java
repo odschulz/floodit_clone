@@ -1,12 +1,14 @@
 package core.color;
 
+import core.interfaces.TileColor;
+
 import java.util.Random;
 
-public class EnumTileColorFactory extends AbstractTileColorFactory {
+public class EnumTileColorGenerator extends AbstractTileColorGenerator {
 
     private Random random;
 
-    EnumTileColorFactory() {
+    EnumTileColorGenerator() {
         this.setRandom(new Random());
     }
 

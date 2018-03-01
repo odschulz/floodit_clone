@@ -1,7 +1,14 @@
 package core.color;
 
+import core.interfaces.TileColor;
+
 public enum TileColorEnum implements TileColor {
-    RED(255, 0, 0), GREEN(105, 225, 150), CYAN(140, 200, 230), YELLOW(230, 230, 140), PURPLE(210, 140, 230), TAN(230, 230, 200);
+    RED(255, 0, 0),
+    GREEN(105, 225, 150),
+    CYAN(140, 200, 230),
+    YELLOW(230, 230, 140),
+    PURPLE(210, 140, 230),
+    TAN(230, 230, 200);
 
     private int red;
     private int green;

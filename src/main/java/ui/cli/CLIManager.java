@@ -1,7 +1,9 @@
-package core;
+package ui.cli;
 
-import core.color.AbstractTileColorFactory;
-import core.color.TileColor;
+import core.Board;
+import core.Tile;
+import core.color.AbstractTileColorGenerator;
+import core.interfaces.TileColor;
 import io.ConsoleReader;
 import io.ConsoleWriter;
 import io.InputReader;
@@ -10,7 +12,7 @@ import io.OutputWriter;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CommandLineGameManager {
+public class CLIManager {
     private static final String EXIT_COMMAND = "exit";
     private final InputReader reader;
     private final OutputWriter writer;
@@ -33,7 +35,7 @@ public class CommandLineGameManager {
     public static final String ANSI_CYAN_BACKGROUND = "\u001B[46m";
     public static final String ANSI_WHITE_BACKGROUND = "\u001B[47m";
 
-    public CommandLineGameManager() {
+    public CLIManager() {
         this.reader = new ConsoleReader();
         this.writer = new ConsoleWriter();
     }
@@ -41,10 +43,10 @@ public class CommandLineGameManager {
     public void startGame() {
         int size = 4;
         boolean completed = false;
-        Board board = new Board(size, size, AbstractTileColorFactory.getFactory());
+        Board board = new Board(size, size, AbstractTileColorGenerator.getFactory());
         Map<String, TileColor> colorCommandMapping = new HashMap<>();
         // @todo Command handling and difficulty manager.
-        for (TileColor color : AbstractTileColorFactory.getFactory().getAllTileColors()) {
+        for (TileColor color : AbstractTileColorGenerator.getFactory().getAllTileColors()) {
             colorCommandMapping.put(color.toString(), color);
         }
 

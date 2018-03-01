@@ -1,4 +1,4 @@
-package core.color;
+package core.interfaces;
 
 public interface TileColor {
     public int getRed();

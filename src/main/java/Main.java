@@ -1,10 +1,9 @@
-import core.CommandLineGameManager;
-import ui.gui.GUI;
+import ui.gui.GUIManager;
 
 public class Main {
     public static void main(String[] args) {
-        GUI.launchGame(args);
-//        CommandLineGameManager cm = new CommandLineGameManager();
+        GUIManager.launchGame(args);
+//        CLIManager cm = new CLIManager();
 //        cm.startGame();
     }
 }

@@ -1,6 +1,6 @@
 package core;
 
-import core.color.TileColor;
+import core.interfaces.TileColor;
 
 public class Tile {
     private int position;

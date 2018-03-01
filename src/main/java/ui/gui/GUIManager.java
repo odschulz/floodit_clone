@@ -2,8 +2,8 @@ package ui.gui;
 
 import core.Board;
 import core.Tile;
-import core.color.AbstractTileColorFactory;
-import core.color.TileColor;
+import core.color.AbstractTileColorGenerator;
+import core.interfaces.TileColor;
 import javafx.application.Application;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -12,13 +12,13 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
-public class GUI extends Application {
+public class GUIManager extends Application {
 
     private static final int X_TILES = 4;
     private static final int Y_TILES = 4;
     private static final int TILE_SIZE = 40;
-    private static final int WIDTH = X_TILES * TILE_SIZE;
-    private static final int HEIGHT = Y_TILES * TILE_SIZE;
+    private static final int WIDTH = X_TILES * TILE_SIZE + 50;
+    private static final int HEIGHT = Y_TILES * TILE_SIZE + 50;
     private static final int BORDER_SIZE = TILE_SIZE - 2;
 
     private Board board;
@@ -26,7 +26,7 @@ public class GUI extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        board = new Board(X_TILES, Y_TILES, AbstractTileColorFactory.getFactory());
+        board = new Board(X_TILES, Y_TILES, AbstractTileColorGenerator.getFactory());
         scene = new Scene(drawBoard());
 
         stage.setScene(scene);
