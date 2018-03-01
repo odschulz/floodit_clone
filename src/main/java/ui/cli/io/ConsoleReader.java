@@ -1,4 +1,6 @@
-package io;
+package ui.cli.io;
+
+import ui.cli.interfaces.InputReader;
 
 import java.io.BufferedReader;
 import java.io.IOException;

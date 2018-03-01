@@ -1,16 +1,16 @@
 package core;
 
-import core.color.TileColor;
+import core.interfaces.TileFill;
 
 public class Tile {
     private int position;
-    private TileColor color;
+    private TileFill fill;
 
     private boolean captured;
 
-    public Tile(int position, TileColor color, boolean captured) {
+    public Tile(int position, TileFill fill, boolean captured) {
         this.setPosition(position);
-        this.setColor(color);
+        this.setFill(fill);
         this.setCaptured(captured);
     }
 
@@ -22,12 +22,12 @@ public class Tile {
         this.position = position;
     }
 
-    public TileColor getColor() {
-        return this.color;
+    public TileFill getFill() {
+        return this.fill;
     }
 
-    void setColor(TileColor color) {
-        this.color = color;
+    void setFill(TileFill fill) {
+        this.fill = fill;
     }
 
     public boolean isCaptured() {

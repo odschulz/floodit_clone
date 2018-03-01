@@ -1,16 +1,20 @@
-package core;
+package ui.cli;
 
-import core.color.AbstractTileColorFactory;
-import core.color.TileColor;
-import io.ConsoleReader;
-import io.ConsoleWriter;
-import io.InputReader;
-import io.OutputWriter;
+import core.Board;
+import core.Tile;
+import core.interfaces.TileFillGenerator;
+import ui.cli.fills.AbstractTileFillGeneratorCLI;
+import ui.gui.fills.AbstractTileFillGeneratorGUI;
+import core.interfaces.TileFill;
+import ui.cli.io.ConsoleReader;
+import ui.cli.io.ConsoleWriter;
+import ui.cli.interfaces.InputReader;
+import ui.cli.interfaces.OutputWriter;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class CommandLineGameManager {
+public class CLIManager {
     private static final String EXIT_COMMAND = "exit";
     private final InputReader reader;
     private final OutputWriter writer;
@@ -33,7 +37,7 @@ public class CommandLineGameManager {
     public static final String ANSI_CYAN_BACKGROUND = "\u001B[46m";
     public static final String ANSI_WHITE_BACKGROUND = "\u001B[47m";
 
-    public CommandLineGameManager() {
+    public CLIManager() {
         this.reader = new ConsoleReader();
         this.writer = new ConsoleWriter();
     }
@@ -41,11 +45,12 @@ public class CommandLineGameManager {
     public void startGame() {
         int size = 4;
         boolean completed = false;
-        Board board = new Board(size, size, AbstractTileColorFactory.getFactory());
-        Map<String, TileColor> colorCommandMapping = new HashMap<>();
+        TileFillGenerator fillGenerator = AbstractTileFillGeneratorCLI.getFactory();
+        Board board = new Board(size, size, fillGenerator);
+        Map<String, TileFill> colorCommandMapping = new HashMap<>();
         // @todo Command handling and difficulty manager.
-        for (TileColor color : AbstractTileColorFactory.getFactory().getAllTileColors()) {
-            colorCommandMapping.put(color.toString(), color);
+        for (TileFill fill : fillGenerator.getAllTileColors()) {
+            colorCommandMapping.put(fill.getValue(), fill);
         }
 
         while (true) {
@@ -55,7 +60,7 @@ public class CommandLineGameManager {
                 this.writer.writeLine("Harasho, you get kebeb!");
                 break;
             }
-            this.writer.writeLine("Please choose a color by typing the corresponding letter. To exit type: " + EXIT_COMMAND);
+            this.writer.writeLine("Please choose a fills by typing the corresponding letter. To exit type: " + EXIT_COMMAND);
             String command = reader.readLine();
 
             if (command.equals(EXIT_COMMAND)) {
@@ -73,22 +78,22 @@ public class CommandLineGameManager {
     }
 
     private boolean drawBoard(Board board, int size) {
-        TileColor color = null;
+        TileFill tileFill = null;
         boolean completed = true;
         for (Tile tile : board) {
             if (tile.getPosition() != 0 && tile.getPosition() % size == 0) {
                 this.writer.writeLine("");
             }
 
-            if (color != null && completed && color != tile.getColor()) {
+            if (tileFill != null && completed && tileFill != tile.getFill()) {
                 completed = false;
             }
 
-            if (color == null) {
-                color = tile.getColor();
+            if (tileFill == null) {
+                tileFill = tile.getFill();
             }
 
-            this.writer.write(String.format("%1$" + 3 + "s", tile.getColor()));
+            this.writer.write(String.format("%1$" + 3 + "s", tile.getFill().getValue()));
         }
 
         this.writer.writeLine("");
