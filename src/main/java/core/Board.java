@@ -1,5 +1,6 @@
 package core;
 
+import core.config.NeighbourPoistion;
 import core.interfaces.TileFill;
 import core.interfaces.TileFillGenerator;
 

@@ -2,6 +2,10 @@ package ui.gui;
 
 import core.Board;
 import core.Tile;
+import core.config.Difficulty;
+import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.text.Text;
 import ui.gui.fills.AbstractTileFillGeneratorGUI;
 import core.interfaces.TileFill;
 import javafx.application.Application;
@@ -14,17 +18,17 @@ import javafx.stage.Stage;
 
 public class GUIManager extends Application {
 
-    private static final int X_TILES = 8;
-    private static final int Y_TILES = 8;
-    private static final int TILE_SIZE = 40;
-    private static final int WIDTH = X_TILES * TILE_SIZE + TILE_SIZE;
-    private static final int HEIGHT = Y_TILES * TILE_SIZE + TILE_SIZE;
-    private static final int BORDER_SIZE = TILE_SIZE - 2;
+    private static final int TILE_SIZE = 30;
+    private static final int BORDER_SIZE = TILE_SIZE - 1;
 
-    private static int movesCount;
+    private int movesCount;
+
+    private Difficulty difficulty;
 
     private Board board;
     private Scene scene;
+    private ChoiceBox<Difficulty> difficultySelect;
+    private Button startGameButton;
 
     public static void startGame(String[] args) {
         Application.launch(args);
@@ -32,19 +36,50 @@ public class GUIManager extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        board = new Board(X_TILES, Y_TILES, AbstractTileFillGeneratorGUI.getFactory());
-        scene = new Scene(drawBoard());
-        movesCount = 0;
+        this.movesCount = 0;
+        Difficulty defaultDifficulty = Difficulty.MEDIUM;
+
+        this.difficulty = defaultDifficulty;
+        this.difficultySelect = new ChoiceBox<>();
+        this.difficultySelect.getItems().addAll(Difficulty.values());
+        this.difficultySelect.setValue(defaultDifficulty);
+        this.difficultySelect.setTranslateX(TILE_SIZE);
+        this.difficultySelect.setMaxWidth(TILE_SIZE * 5);
+        this.difficultySelect.setOnAction(event -> setDifficulty(difficultySelect.getValue()));
+
+        this.startGameButton = new Button();
+        this.startGameButton.setText("New game");
+        this.startGameButton.setTranslateX(TILE_SIZE * 6);
+        this.startGameButton.setOnAction(event -> this.resetGame());
+
+        this.setBoard();
+        this.scene = new Scene(this.drawBoard());
+
 
         stage.setScene(scene);
         stage.show();
     }
 
-    private Parent drawBoard() {
-        Pane root = new Pane();
-        root.setPrefSize(WIDTH, HEIGHT);
+    private void setBoard() {
+        this.board = new Board(this.difficulty.getxCount(), this.difficulty.getyCount(), AbstractTileFillGeneratorGUI.getFactory());
+    }
 
-        for (Tile tile : board) {
+    private void resetGame() {
+        this.movesCount = 0;
+        this.setBoard();
+        this.scene.setRoot(this.drawBoard());
+    }
+
+    private Parent drawBoard() {
+        Boolean win = true;
+        Pane root = new Pane();
+        root.setPrefSize(
+                (Difficulty.HARD.getxCount() * TILE_SIZE) + 2 * TILE_SIZE,
+                (Difficulty.HARD.getyCount() * TILE_SIZE) + 2 * TILE_SIZE
+        );
+        root.getChildren().addAll(this.difficultySelect, this.startGameButton);
+
+        for (Tile tile : this.board) {
             StackPane pane = new StackPane();
             TileFill tileColor = tile.getFill();
             Color color = Color.web(tileColor.getValue(), 1);
@@ -53,22 +88,49 @@ public class GUIManager extends Application {
             border.setStroke(Color.LIGHTGRAY);
             pane.getChildren().addAll(border);
 
-            pane.setTranslateX(board.getTileX(tile) * TILE_SIZE);
-            pane.setTranslateY(board.getTileY(tile) * TILE_SIZE);
+            pane.setTranslateX(this.board.getTileX(tile) * TILE_SIZE);
+            pane.setTranslateY(this.board.getTileY(tile) * TILE_SIZE);
 
-            if (tile.getFill() != board.getCurrentFill()) {
+            if (tile.getFill() != this.board.getCurrentFill()) {
                 pane.setOnMouseClicked(e -> this.makeMove(tile));
+                win = false;
             }
 
             root.getChildren().add(pane);
         }
 
+        Color color = null;
+        if (win) {
+            color = Color.GREEN;
+        } else if (this.movesCount >= this.difficulty.getMaxMoves()) {
+            color = Color.RED;
+        }
+        Text text = new Text();
+        text.setTranslateX(TILE_SIZE);
+        text.setTranslateY((this.difficulty.getyCount() + 1.5) * TILE_SIZE );
+        String message = String.format("Moves %d/%d", this.movesCount, this.difficulty.getMaxMoves());
+        if (this.movesCount >= this.difficulty.getMaxMoves()) {
+            text.setText(message + ". Sorry, you should eat more kebeb!");
+            text.setFill(Color.RED);
+        } else if (win) {
+            text.setText(message + ". Niceuuu, you get kebeb!.");
+            text.setFill(Color.GREEN);
+        }  else {
+            text.setText(message);
+        }
+
+        root.getChildren().add(text);
+
         return root;
     }
 
     private void makeMove(Tile tile) {
-        board.makeMove(tile.getFill());
-        movesCount++;
-        scene.setRoot(drawBoard());
+        this.board.makeMove(tile.getFill());
+        this.movesCount++;
+        this.scene.setRoot(this.drawBoard());
+    }
+
+    private void setDifficulty(Difficulty difficulty) {
+        this.difficulty = difficulty;
     }
 }
