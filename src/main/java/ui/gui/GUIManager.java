@@ -1,6 +1,6 @@
 package ui.gui;
 
-import core.Board;
+import core.BoardManager;
 import core.Tile;
 import core.config.Difficulty;
 import javafx.scene.control.Button;
@@ -25,7 +25,7 @@ public class GUIManager extends Application {
 
     private Difficulty difficulty;
 
-    private Board board;
+    private BoardManager boardManager;
     private Scene scene;
     private ChoiceBox<Difficulty> difficultySelect;
     private Button startGameButton;
@@ -61,7 +61,7 @@ public class GUIManager extends Application {
     }
 
     private void setBoard() {
-        this.board = new Board(this.difficulty.getxCount(), this.difficulty.getyCount(), AbstractTileFillGeneratorGUI.getFactory());
+        this.boardManager = new BoardManager(this.difficulty.getxCount(), this.difficulty.getyCount(), AbstractTileFillGeneratorGUI.getFactory());
     }
 
     private void resetGame() {
@@ -79,7 +79,7 @@ public class GUIManager extends Application {
         );
         root.getChildren().addAll(this.difficultySelect, this.startGameButton);
 
-        for (Tile tile : this.board) {
+        for (Tile tile : this.boardManager) {
             StackPane pane = new StackPane();
             TileFill tileColor = tile.getFill();
             Color color = Color.web(tileColor.getValue(), 1);
@@ -88,10 +88,10 @@ public class GUIManager extends Application {
             border.setStroke(Color.LIGHTGRAY);
             pane.getChildren().addAll(border);
 
-            pane.setTranslateX(this.board.getTileX(tile) * TILE_SIZE);
-            pane.setTranslateY(this.board.getTileY(tile) * TILE_SIZE);
+            pane.setTranslateX(this.boardManager.getTileX(tile) * TILE_SIZE);
+            pane.setTranslateY(this.boardManager.getTileY(tile) * TILE_SIZE);
 
-            if (tile.getFill() != this.board.getCurrentFill()) {
+            if (tile.getFill() != this.boardManager.getCurrentFill()) {
                 pane.setOnMouseClicked(e -> this.makeMove(tile));
                 win = false;
             }
@@ -125,7 +125,7 @@ public class GUIManager extends Application {
     }
 
     private void makeMove(Tile tile) {
-        this.board.makeMove(tile.getFill());
+        this.boardManager.makeMove(tile.getFill());
         this.movesCount++;
         this.scene.setRoot(this.drawBoard());
     }

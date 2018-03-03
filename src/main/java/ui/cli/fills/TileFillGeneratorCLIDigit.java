@@ -22,14 +22,14 @@ public class TileFillGeneratorCLIDigit extends AbstractTileFillGeneratorCLI {
     }
 
     @Override
-    public TileFill getRandomTileColor() {
+    public TileFill getRandomTileFill() {
         TileFillDigit[] colors = TileFillDigit.values();
         int ordinal = this.random.nextInt(colors.length);
         return colors[ordinal];
     }
 
     @Override
-    public TileFill[] getAllTileColors() {
+    public TileFill[] getAllTileFills() {
         return TileFillDigit.values();
     }
 }

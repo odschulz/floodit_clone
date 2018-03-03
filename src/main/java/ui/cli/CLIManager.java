@@ -1,10 +1,9 @@
 package ui.cli;
 
-import core.Board;
+import core.BoardManager;
 import core.Tile;
 import core.interfaces.TileFillGenerator;
 import ui.cli.fills.AbstractTileFillGeneratorCLI;
-import ui.gui.fills.AbstractTileFillGeneratorGUI;
 import core.interfaces.TileFill;
 import ui.cli.io.ConsoleReader;
 import ui.cli.io.ConsoleWriter;
@@ -43,18 +42,18 @@ public class CLIManager {
     }
 
     public void startGame() {
-        int size = 4;
+        int size = 2;
         boolean completed = false;
         TileFillGenerator fillGenerator = AbstractTileFillGeneratorCLI.getFactory();
-        Board board = new Board(size, size, fillGenerator);
-        Map<String, TileFill> colorCommandMapping = new HashMap<>();
+        BoardManager boardManager = new BoardManager(size, size, fillGenerator);
+        Map<String, TileFill> tileFillCommandMapping = new HashMap<>();
         // @todo Command handling and difficulty manager.
-        for (TileFill fill : fillGenerator.getAllTileColors()) {
-            colorCommandMapping.put(fill.getValue(), fill);
+        for (TileFill fill : fillGenerator.getAllTileFills()) {
+            tileFillCommandMapping.put(fill.getValue(), fill);
         }
 
         while (true) {
-            completed = this.drawBoard(board, size);
+            completed = this.drawBoard(boardManager, size);
 
             if (completed) {
                 this.writer.writeLine("Harasho, you get kebeb!");
@@ -68,8 +67,8 @@ public class CLIManager {
                 break;
             }
 
-            if (colorCommandMapping.containsKey(command)) {
-                board.makeMove(colorCommandMapping.get(command));
+            if (tileFillCommandMapping.containsKey(command)) {
+                boardManager.makeMove(tileFillCommandMapping.get(command));
             } else {
                 this.writer.writeLine("Incorrect command");
             }
@@ -77,10 +76,10 @@ public class CLIManager {
         }
     }
 
-    private boolean drawBoard(Board board, int size) {
+    private boolean drawBoard(BoardManager boardManager, int size) {
         TileFill tileFill = null;
         boolean completed = true;
-        for (Tile tile : board) {
+        for (Tile tile : boardManager) {
             if (tile.getPosition() != 0 && tile.getPosition() % size == 0) {
                 this.writer.writeLine("");
             }

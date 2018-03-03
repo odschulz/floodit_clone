@@ -6,7 +6,7 @@ import core.interfaces.TileFillGenerator;
 
 import java.util.Iterator;
 
-public class Board implements Iterable<Tile> {
+public class BoardManager implements Iterable<Tile> {
     final private int xCount;
     final private int yCount;
 
@@ -14,7 +14,7 @@ public class Board implements Iterable<Tile> {
     final private Tile[] tiles;
     private TileFill currentFill;
 
-    public Board(int x, int y, TileFillGenerator fillGenerator) {
+    public BoardManager(int x, int y, TileFillGenerator fillGenerator) {
         // @todo Refactor to make it work with different x and y.
         this.xCount = x;
         this.yCount = y;
@@ -51,10 +51,6 @@ public class Board implements Iterable<Tile> {
         this.currentFill = currentFill;
     }
 
-    public void makeMove(TileFill color) {
-        this.setCurrentFill(color);
-    }
-
     public int getTileX(Tile tile) {
         return tile.getPosition() % this.getXCount() + 1;
     }
@@ -65,14 +61,62 @@ public class Board implements Iterable<Tile> {
 
     private void initBoard() {
         for (int i = 0; i < this.tiles.length; i++) {
-            TileFill color = this.getFillGenerator().getRandomTileColor();
+            TileFill tileFill = this.getFillGenerator().getRandomTileFill();
 
             boolean captured = false;
             if (i == 0) {
-                this.setCurrentFill(color);
+                // Set current color to the one of the first element.
+                this.setCurrentFill(tileFill);
                 captured = true;
+            } else if (tileFill == this.getCurrentFill()) {
+                // Capture this tile if it has the same color as the current one
+                // and at least one captured neighbour.
+                for (NeighbourPoistion neighbourPoistion : NeighbourPoistion.values()) {
+                    Tile neighbourTile = this.getNeighbouringTile(i, neighbourPoistion);
+                    if (neighbourTile != null && neighbourTile.isCaptured()) {
+                        captured = true;
+                        break;
+                    }
+                }
             }
-            this.tiles[i] = new Tile(i, color, captured);
+            this.tiles[i] = new Tile(i, tileFill, captured);
+        }
+    }
+
+    public void makeMove(TileFill tileFill) {
+        this.setCurrentFill(tileFill);
+        this.tiles[0].setFill(tileFill);
+        this.recursiveTileCapture(this.tiles[0], new boolean[this.getSize()]);
+    }
+
+    /**
+     * Capture the passed tile and recursively traverse and capture its
+     * neighbouring tiles.
+     *
+     * @param tile    the Tile to capture, the method will recursively traverse
+     *                through all of its neighbouring tiles and capture them
+     *                if they have the same as the current color
+     * @param visited flag all visited nodes to avoid recursive calls
+     *
+     * @see NeighbourPoistion
+     */
+    private void recursiveTileCapture(Tile tile, boolean[] visited) {
+        if (!tile.isCaptured()) {
+            tile.setCaptured(true);
+        }
+
+        if (tile.getFill() != this.getCurrentFill()) {
+            tile.setFill(this.getCurrentFill());
+        }
+        visited[tile.getPosition()] = true;
+
+        for (NeighbourPoistion neighbourPoistion : NeighbourPoistion.values()) {
+            Tile neighbour = this.getNeighbouringTile(tile.getPosition(), neighbourPoistion);
+            if (neighbour != null
+                    && (neighbour.getFill() == this.getCurrentFill() || neighbour.isCaptured())
+                    && !visited[neighbour.getPosition()]) {
+                this.recursiveTileCapture(neighbour, visited);
+            }
         }
     }
 
@@ -94,7 +138,7 @@ public class Board implements Iterable<Tile> {
                 }
                 break;
             case RIGHT:
-                if ((index +1) % sideCount == 0) {
+                if ((index + 1) % sideCount == 0) {
                     neighboutIndex = -1;
                 } else {
                     neighboutIndex = index + 1;
@@ -108,7 +152,6 @@ public class Board implements Iterable<Tile> {
                 this.tiles[neighboutIndex] :
                 null;
     }
-
 
     @Override
     public Iterator<Tile> iterator() {
@@ -131,22 +174,6 @@ public class Board implements Iterable<Tile> {
         @Override
         public Tile next() {
             Tile currentTile = tiles[this.index];
-            TileFill currentFill = getCurrentFill();
-            if (currentTile.isCaptured()) {
-                currentTile.setFill(currentFill);
-            } else {
-                for (NeighbourPoistion position : NeighbourPoistion.values()) {
-                    Tile neighbourTile = getNeighbouringTile(this.index, position);
-                    if (neighbourTile != null &&
-                            neighbourTile.isCaptured() &&
-                            currentTile.getFill() == currentFill) {
-                        currentTile.setFill(currentFill);
-                        currentTile.setCaptured(true);
-                        break;
-                    }
-                }
-            }
-
             this.index++;
             return currentTile;
         }

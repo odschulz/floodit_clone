@@ -21,14 +21,14 @@ public class TileFillGeneratorGUIColor extends AbstractTileFillGeneratorGUI {
     }
 
     @Override
-    public TileFill getRandomTileColor() {
+    public TileFill getRandomTileFill() {
         TileFillColor[] colors = TileFillColor.values();
         int ordinal = this.random.nextInt(colors.length);
         return colors[ordinal];
     }
 
     @Override
-    public TileFill[] getAllTileColors() {
+    public TileFill[] getAllTileFills() {
         return TileFillColor.values();
     }
 }

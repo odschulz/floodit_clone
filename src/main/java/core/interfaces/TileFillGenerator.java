@@ -1,6 +1,6 @@
 package core.interfaces;
 
 public interface TileFillGenerator {
-    TileFill getRandomTileColor();
-    TileFill[] getAllTileColors();
+    TileFill getRandomTileFill();
+    TileFill[] getAllTileFills();
 }
