@@ -1,8 +1,9 @@
 package ui.gui;
 
-import core.BoardManager;
-import core.Tile;
+import core.BoardFactory;
+import core.Tile2D;
 import core.config.Difficulty;
+import core.interfaces.Board2D;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.text.Text;
@@ -20,12 +21,14 @@ public class GUIManager extends Application {
 
     private static final int TILE_SIZE = 30;
     private static final int BORDER_SIZE = TILE_SIZE - 1;
+    private static final int BOARD_OFFSET = 30;
+    private static final int COLOR_OPACITY = 1;
 
     private int movesCount;
 
     private Difficulty difficulty;
 
-    private BoardManager boardManager;
+    private Board2D board;
     private Scene scene;
     private ChoiceBox<Difficulty> difficultySelect;
     private Button startGameButton;
@@ -61,7 +64,10 @@ public class GUIManager extends Application {
     }
 
     private void setBoard() {
-        this.boardManager = new BoardManager(this.difficulty.getxCount(), this.difficulty.getyCount(), AbstractTileFillGeneratorGUI.getFactory());
+        this.board = BoardFactory.getBoard(
+                this.difficulty.getRowCount(),
+                this.difficulty.getColCount(),
+                AbstractTileFillGeneratorGUI.getFactory());
     }
 
     private void resetGame() {
@@ -74,42 +80,44 @@ public class GUIManager extends Application {
         Boolean win = true;
         Pane root = new Pane();
         root.setPrefSize(
-                (Difficulty.HARD.getxCount() * TILE_SIZE) + 2 * TILE_SIZE,
-                (Difficulty.HARD.getyCount() * TILE_SIZE) + 2 * TILE_SIZE
+                (Difficulty.HARD.getRowCount() * TILE_SIZE) + (2 * BOARD_OFFSET),
+                (Difficulty.HARD.getColCount() * TILE_SIZE) + (2 * BOARD_OFFSET)
         );
         root.getChildren().addAll(this.difficultySelect, this.startGameButton);
 
-        for (Tile tile : this.boardManager) {
-            StackPane pane = new StackPane();
-            TileFill tileColor = tile.getFill();
-            Color color = Color.web(tileColor.getValue(), 1);
-            Rectangle border = new Rectangle(BORDER_SIZE, BORDER_SIZE, color);
-            // @todo Fix border.
-            border.setStroke(Color.LIGHTGRAY);
-            pane.getChildren().addAll(border);
+        for (Tile2D[] tileRow : this.board.getTiles()) {
+            for (Tile2D tile : tileRow) {
+                StackPane pane = new StackPane();
+                TileFill tileColor = tile.getFill();
+                Color color = Color.web(tileColor.getValue(), COLOR_OPACITY);
+                Rectangle border = new Rectangle(BORDER_SIZE, BORDER_SIZE, color);
+                // @todo Fix border.
+                border.setStroke(Color.LIGHTGRAY);
+                pane.getChildren().addAll(border);
 
-            pane.setTranslateX(this.boardManager.getTileX(tile) * TILE_SIZE);
-            pane.setTranslateY(this.boardManager.getTileY(tile) * TILE_SIZE);
+                pane.setTranslateX(tile.getCol() * TILE_SIZE + BOARD_OFFSET);
+                pane.setTranslateY(tile.getRow() * TILE_SIZE + BOARD_OFFSET);
 
-            if (tile.getFill() != this.boardManager.getCurrentFill()) {
-                pane.setOnMouseClicked(e -> this.makeMove(tile));
-                win = false;
+                if (tile.getFill() != this.board.getCurrentFill()) {
+                    pane.setOnMouseClicked(e -> this.makeMove(tile.getFill()));
+                    win = false;
+                }
+
+                root.getChildren().add(pane);
             }
-
-            root.getChildren().add(pane);
         }
 
-        Color color = null;
+        Color messageColor = null;
         if (win) {
-            color = Color.GREEN;
+            messageColor = Color.GREEN;
         } else if (this.movesCount >= this.difficulty.getMaxMoves()) {
-            color = Color.RED;
+            messageColor = Color.RED;
         }
         Text text = new Text();
         text.setTranslateX(TILE_SIZE);
-        text.setTranslateY((this.difficulty.getyCount() + 1.5) * TILE_SIZE );
+        text.setTranslateY((this.difficulty.getColCount() + 1.5) * TILE_SIZE );
         String message = String.format("Moves %d/%d", this.movesCount, this.difficulty.getMaxMoves());
-        if (this.movesCount >= this.difficulty.getMaxMoves()) {
+        if (this.movesCount > this.difficulty.getMaxMoves()) {
             text.setText(message + ". Sorry, you should eat more kebeb!");
             text.setFill(Color.RED);
         } else if (win) {
@@ -124,8 +132,8 @@ public class GUIManager extends Application {
         return root;
     }
 
-    private void makeMove(Tile tile) {
-        this.boardManager.makeMove(tile.getFill());
+    private void makeMove(TileFill tileFill) {
+        this.board.makeMove(tileFill);
         this.movesCount++;
         this.scene.setRoot(this.drawBoard());
     }
