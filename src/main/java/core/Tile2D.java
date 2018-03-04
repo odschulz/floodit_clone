@@ -2,24 +2,26 @@ package core;
 
 import core.interfaces.TileFill;
 
-public class Tile {
-    private int position;
-    private TileFill fill;
+final public class Tile2D {
+    private final int row;
+    private final int col;
 
+    private TileFill fill;
     private boolean captured;
 
-    public Tile(int position, TileFill fill, boolean captured) {
-        this.setPosition(position);
+    Tile2D(int row, int col, TileFill fill, boolean captured) {
+        this.row = row;
+        this.col = col;
         this.setFill(fill);
         this.setCaptured(captured);
     }
 
-    public int getPosition() {
-        return this.position;
+    public int getRow() {
+        return this.row;
     }
 
-    private void setPosition(int position) {
-        this.position = position;
+    public int getCol() {
+        return this.col;
     }
 
     public TileFill getFill() {
@@ -34,7 +36,7 @@ public class Tile {
         return this.captured;
     }
 
-    public void setCaptured(boolean captured) {
+    void setCaptured(boolean captured) {
         this.captured = captured;
     }
 }
