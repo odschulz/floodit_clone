@@ -5,20 +5,22 @@ import core.interfaces.Board2D;
 import core.interfaces.TileFill;
 import core.interfaces.TileFillGenerator;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 final class Board2DArray implements Board2D {
-    final private static int START_TILE_ROW = 0;
-    final private static int START_TILE_COL = 0;
+    private static final int START_TILE_ROW = 0;
+    private static final int START_TILE_COL = 0;
 
-    final private int rowCount;
-    final private int colCount;
-    final private TileFillGenerator fillGenerator;
-    final private Tile2D[][] tiles;
+    private final int rowCount;
+    private final int colCount;
+    private final TileFillGenerator fillGenerator;
+    private final Tile2D[][] tiles;
 
     private TileFill currentFill;
 
     public Board2DArray(int rowCount, int colCount, TileFillGenerator fillGenerator) {
         // @todo Validate x/y.
+        // @todo remove public
         this.rowCount = rowCount;
         this.colCount = colCount;
         this.fillGenerator = fillGenerator;
@@ -42,6 +44,7 @@ final class Board2DArray implements Board2D {
     }
 
     public Tile2D[][] getTiles() {
+        // @todo make deep copy
         return this.tiles.clone();
     }
 
@@ -70,6 +73,7 @@ final class Board2DArray implements Board2D {
                 if (row == START_TILE_ROW && col == START_TILE_COL) {
                     // Set the first element color as the current board color.
                     this.setCurrentFill(tileFill);
+                    captured = true;
                 }
                 this.tiles[row][col] = new Tile2D(row, col, tileFill, captured);
             }
@@ -81,19 +85,19 @@ final class Board2DArray implements Board2D {
                 new boolean[this.rowCount][this.colCount]);
     }
 
-    private ArrayList<Tile2D> getNeighbouringTiles(int row, int col) {
-        ArrayList<Tile2D> tile2DS = new ArrayList<>();
+    private HashMap<Direction2D, Tile2D> getNeighbouringTiles(int row, int col) {
+        HashMap<Direction2D, Tile2D> neighbourTiles = new HashMap<>();
         Tile2D[][] tiles = this.getTiles();
         for (Direction2D direction : Direction2D.values()) {
             int neighbourRow = row + direction.getRow();
             int neighbourCol = col + direction.getCol();
             if (neighbourRow >= 0 && neighbourRow < this.getRowCount()
                     && neighbourCol >= 0 && neighbourCol < this.getColCount()) {
-                tile2DS.add(tiles[neighbourRow][neighbourCol]);
+                neighbourTiles.put(direction, tiles[neighbourRow][neighbourCol]);
             }
         }
 
-        return tile2DS;
+        return neighbourTiles;
     }
 
     /**
@@ -117,7 +121,7 @@ final class Board2DArray implements Board2D {
         }
         visited[tile.getRow()][tile.getCol()] = true;
 
-        for (Tile2D neighbour : this.getNeighbouringTiles(tile.getRow(), tile.getCol())) {
+        for (Tile2D neighbour : this.getNeighbouringTiles(tile.getRow(), tile.getCol()).values()) {
             if ((neighbour.getFill() == this.getCurrentFill() || neighbour.isCaptured())
                     && !visited[neighbour.getRow()][neighbour.getCol()]) {
                 this.recursiveTileCapture(neighbour, visited);
