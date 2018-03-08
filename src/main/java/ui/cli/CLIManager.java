@@ -1,11 +1,11 @@
 package ui.cli;
 
-import core.BoardFactory;
+import core.GameManager;
 import core.Tile2D;
+import core.config.Difficulty;
 import core.interfaces.Board2D;
-import core.interfaces.TileFillGenerator;
-import ui.cli.fills.AbstractTileFillGeneratorCLI;
 import core.interfaces.TileFill;
+import ui.cli.fills.TileFillDigit;
 import ui.cli.io.ConsoleReader;
 import ui.cli.io.ConsoleWriter;
 import ui.cli.interfaces.InputReader;
@@ -16,6 +16,8 @@ import java.util.Map;
 
 public class CLIManager {
     private static final String EXIT_COMMAND = "exit";
+    private static final Difficulty DEFAULT_DIFFICULTY = Difficulty.EASY;
+    private static final int FILL_RENDER_PADDING =3;
     private final InputReader reader;
     private final OutputWriter writer;
 
@@ -25,24 +27,22 @@ public class CLIManager {
     }
 
     public void startGame() {
-        int size = 2;
         boolean completed = false;
-        TileFillGenerator fillGenerator = AbstractTileFillGeneratorCLI.getFactory();
-        Board2D board = BoardFactory.getBoard(size, size, fillGenerator);
+        Board2D board = GameManager.getBoard(DEFAULT_DIFFICULTY, TileFillDigit.values());
         Map<String, TileFill> tileFillCommandMapping = new HashMap<>();
         // @todo Command handling and difficulty manager.
-        for (TileFill fill : fillGenerator.getAllTileFills()) {
+        for (TileFill fill : board.getFillGenerator().getTileFills()) {
             tileFillCommandMapping.put(fill.getValue(), fill);
         }
 
         while (true) {
-            completed = this.drawBoard(board, size);
+            completed = this.drawBoard(board);
 
             if (completed) {
                 this.writer.writeLine("Harasho, you get kebeb!");
                 break;
             }
-            this.writer.writeLine("Please choose a fills by typing the corresponding letter. To exit type: " + EXIT_COMMAND);
+            this.writer.writeLine("Please choose a fill by typing the corresponding letter. To exit type: " + EXIT_COMMAND);
             String command = reader.readLine();
 
             if (command.equals(EXIT_COMMAND)) {
@@ -59,7 +59,7 @@ public class CLIManager {
         }
     }
 
-    private boolean drawBoard(Board2D board, int size) {
+    private boolean drawBoard(Board2D board) {
         TileFill tileFill = null;
         boolean completed = true;
         for (Tile2D[] tileRow : board.getTiles()) {
@@ -72,7 +72,7 @@ public class CLIManager {
                     tileFill = tile.getFill();
                 }
 
-                this.writer.write(String.format("%1$" + 3 + "s", tile.getFill().getValue()));
+                this.writer.write(String.format("%1$" + FILL_RENDER_PADDING + "s", tile.getFill().getValue()));
             }
             this.writer.writeLine("");
         }

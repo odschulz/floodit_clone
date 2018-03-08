@@ -1,13 +1,12 @@
 package ui.gui;
 
-import core.BoardFactory;
+import core.GameManager;
 import core.Tile2D;
 import core.config.Difficulty;
 import core.interfaces.Board2D;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.text.Text;
-import ui.gui.fills.AbstractTileFillGeneratorGUI;
 import core.interfaces.TileFill;
 import javafx.application.Application;
 import javafx.scene.Parent;
@@ -16,6 +15,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+import ui.gui.fills.TileFillColor;
 
 public class GUIManager extends Application {
 
@@ -64,10 +64,11 @@ public class GUIManager extends Application {
     }
 
     private void setBoard() {
-        this.board = BoardFactory.getBoard(
-                this.difficulty.getRowCount(),
-                this.difficulty.getColCount(),
-                AbstractTileFillGeneratorGUI.getFactory());
+        // @todo: Add factory for colors and ability for player to choose
+        // a palette.
+        this.board = GameManager.getBoard(
+                this.difficulty,
+                TileFillColor.values());
     }
 
     private void resetGame() {

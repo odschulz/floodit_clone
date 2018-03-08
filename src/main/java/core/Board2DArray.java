@@ -18,7 +18,7 @@ final class Board2DArray implements Board2D {
 
     private TileFill currentFill;
 
-    public Board2DArray(int rowCount, int colCount, TileFillGenerator fillGenerator) {
+    Board2DArray(int rowCount, int colCount, TileFillGenerator fillGenerator) {
         // @todo Validate x/y.
         // @todo remove public
         this.rowCount = rowCount;
@@ -44,7 +44,6 @@ final class Board2DArray implements Board2D {
     }
 
     public Tile2D[][] getTiles() {
-        // @todo make deep copy
         return this.tiles.clone();
     }
 
