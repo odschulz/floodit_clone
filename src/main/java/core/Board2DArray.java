@@ -1,65 +1,31 @@
 package core;
 
 import core.config.Direction2D;
-import core.interfaces.Board2D;
 import core.interfaces.TileFill;
 import core.interfaces.TileFillGenerator;
-import java.util.ArrayList;
+
 import java.util.HashMap;
 
-final class Board2DArray implements Board2D {
+final class Board2DArray extends AbstractBoard2D {
     private static final int START_TILE_ROW = 0;
     private static final int START_TILE_COL = 0;
 
-    private final int rowCount;
-    private final int colCount;
-    private final TileFillGenerator fillGenerator;
     private final Tile2D[][] tiles;
 
-    private TileFill currentFill;
-
     Board2DArray(int rowCount, int colCount, TileFillGenerator fillGenerator) {
-        // @todo Validate x/y.
-        // @todo remove public
-        this.rowCount = rowCount;
-        this.colCount = colCount;
-        this.fillGenerator = fillGenerator;
-        this.tiles = new Tile2D[rowCount][colCount];
+        super(rowCount, colCount, fillGenerator);
 
+        this.tiles = new Tile2D[rowCount][colCount];
         this.initBoard();
     }
 
     @Override
-    public int getRowCount() {
-        return this.rowCount;
-    }
-
-    @Override
-    public int getColCount() {
-        return this.colCount;
-    }
-
-    public TileFillGenerator getFillGenerator() {
-        return this.fillGenerator;
-    }
-
     public Tile2D[][] getTiles() {
         return this.tiles.clone();
     }
-
     @Override
-    public TileFill getCurrentFill() {
-        return this.currentFill;
-    }
-
-    private void setCurrentFill(TileFill currentFill) {
-        this.currentFill = currentFill;
-    }
-
-    @Override
-    public void makeMove(TileFill tileFill) {
+    void captureTiles() {
         Tile2D startingTile = this.getTiles()[START_TILE_ROW][START_TILE_COL];
-        this.setCurrentFill(tileFill);
         this.recursiveTileCapture(startingTile, new boolean[this.getRowCount()][this.getColCount()]);
     }
 
@@ -81,9 +47,17 @@ final class Board2DArray implements Board2D {
         // Capture mark all captured tiles.
         this.recursiveTileCapture(
                 this.tiles[START_TILE_ROW][START_TILE_COL],
-                new boolean[this.rowCount][this.colCount]);
+                new boolean[this.getRowCount()][this.getColCount()]);
     }
 
+    /**
+     * Neighbouring tiles are all adjacent tiles in horizontal/vertical line.
+     *
+     * @param row Row number.
+     * @param col Column number
+     *
+     * @return All found tiles indexed by their direction or empty Map.
+     */
     private HashMap<Direction2D, Tile2D> getNeighbouringTiles(int row, int col) {
         HashMap<Direction2D, Tile2D> neighbourTiles = new HashMap<>();
         Tile2D[][] tiles = this.getTiles();
