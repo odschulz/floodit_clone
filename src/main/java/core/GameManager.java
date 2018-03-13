@@ -10,6 +10,6 @@ public class GameManager {
     public static Board2D getBoard(Difficulty difficulty, TileFill[] tileFills) {
         // @todo
         TileFillGenerator fillGenerator = TileFillGeneratorFactory.getFillGenerator(tileFills);
-        return new Board2DArray(difficulty.getRowCount(), difficulty.getColCount(), fillGenerator);
+        return new Board2DArray(difficulty.getRowCount(), difficulty.getColCount(), fillGenerator, difficulty.getMaxMoves());
     }
 }

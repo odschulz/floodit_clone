@@ -3,6 +3,7 @@ package ui.gui;
 import core.GameManager;
 import core.Tile2D;
 import core.config.Difficulty;
+import core.config.GameStatus;
 import core.interfaces.Board2D;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
@@ -101,31 +102,20 @@ public class GUIManager extends Application {
 
                 if (tile.getFill() != this.board.getCurrentFill()) {
                     pane.setOnMouseClicked(e -> this.makeMove(tile.getFill()));
-                    win = false;
                 }
 
                 root.getChildren().add(pane);
             }
         }
 
-        Color messageColor = null;
-        if (win) {
-            messageColor = Color.GREEN;
-        } else if (this.movesCount >= this.difficulty.getMaxMoves()) {
-            messageColor = Color.RED;
-        }
-        Text text = new Text();
+        Text text = new Text(this.board.getGameStatusMessage());
         text.setTranslateX(TILE_SIZE);
         text.setTranslateY((this.difficulty.getColCount() + 1.5) * TILE_SIZE );
-        String message = String.format("Moves %d/%d", this.movesCount, this.difficulty.getMaxMoves());
-        if (this.movesCount > this.difficulty.getMaxMoves()) {
-            text.setText(message + ". Sorry, you should eat more kebeb!");
-            text.setFill(Color.RED);
-        } else if (win) {
-            text.setText(message + ". Niceuuu, you get kebeb!.");
+        GameStatus status = this.board.getGameStatus();
+        if (status == GameStatus.WON) {
             text.setFill(Color.GREEN);
-        }  else {
-            text.setText(message);
+        } else if(status == GameStatus.LOST) {
+            text.setFill(Color.RED);
         }
 
         root.getChildren().add(text);

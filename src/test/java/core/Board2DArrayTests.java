@@ -21,6 +21,7 @@ import java.util.Optional;
 public class Board2DArrayTests {
     private static final int ROW_SIZE = 3;
     private static final int COL_SIZE = 3;
+    private static final int MAX_MOVES = 5;
     private static final String FILL_A_VAL = "A";
     private static final String FILL_B_VAL = "B";
     private static final String FILL_C_VAL = "C";
@@ -36,6 +37,7 @@ public class Board2DArrayTests {
     private boolean[][] tileFillsToBeCaptured;
     private TileFill startFill;
     private TileFill changeFill;
+    private TileFill lastFill;
     private TileFillGenerator fillGenerator;
     private Board2D board;
 
@@ -50,6 +52,7 @@ public class Board2DArrayTests {
 
         this.startFill = fillA;
         this.changeFill = fillB;
+        this.lastFill = fillC;
 
         /*
          * Mock a TileFill generator so that the constructed board has a
@@ -78,7 +81,7 @@ public class Board2DArrayTests {
             }
         });
 
-        this.board = new Board2DArray(ROW_SIZE, COL_SIZE, fillGenerator);
+        this.board = new Board2DArray(ROW_SIZE, COL_SIZE, fillGenerator, MAX_MOVES);
     }
 
     @Test
@@ -151,6 +154,19 @@ public class Board2DArrayTests {
                 }
             }
         }
+    }
+
+    @Test
+    public void testIsCompleted() {
+        this.board.makeMove(this.changeFill);
+        this.board.makeMove(this.lastFill);
+        Assert.assertEquals("Board should be completed.", true, this.board.isCompleted());
+    }
+
+    @Test
+    public void testIsNotCompleted() {
+        this.board.makeMove(this.changeFill);
+        Assert.assertEquals("Board should not be completed.", false, this.board.isCompleted());
     }
 
 }

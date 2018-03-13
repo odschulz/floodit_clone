@@ -12,8 +12,8 @@ final class Board2DArray extends AbstractBoard2D {
 
     private final Tile2D[][] tiles;
 
-    Board2DArray(int rowCount, int colCount, TileFillGenerator fillGenerator) {
-        super(rowCount, colCount, fillGenerator);
+    Board2DArray(int rowCount, int colCount, TileFillGenerator fillGenerator, int maxMoves) {
+        super(rowCount, colCount, fillGenerator, maxMoves);
 
         this.tiles = new Tile2D[rowCount][colCount];
         this.initBoard();
@@ -85,6 +85,15 @@ final class Board2DArray extends AbstractBoard2D {
      * @see Direction2D
      */
     private void recursiveTileCapture(Tile2D tile, boolean[][] visited) {
+        int tileRow = tile.getRow();
+        int tileCol = tile.getCol();
+
+        // This flag will be reset if at least one tile is found that has a
+        // different color.
+        if (tileRow == START_TILE_ROW && tileCol == START_TILE_COL) {
+            this.setCompleted(true);
+        }
+
         if (!tile.isCaptured()) {
             tile.setCaptured(true);
         }
@@ -92,12 +101,15 @@ final class Board2DArray extends AbstractBoard2D {
         if (tile.getFill() != this.getCurrentFill()) {
             tile.setFill(this.getCurrentFill());
         }
-        visited[tile.getRow()][tile.getCol()] = true;
+        visited[tileRow][tileCol] = true;
 
-        for (Tile2D neighbour : this.getNeighbouringTiles(tile.getRow(), tile.getCol()).values()) {
-            if ((neighbour.getFill() == this.getCurrentFill() || neighbour.isCaptured())
-                    && !visited[neighbour.getRow()][neighbour.getCol()]) {
-                this.recursiveTileCapture(neighbour, visited);
+        for (Tile2D neighbour : this.getNeighbouringTiles(tileRow, tileCol).values()) {
+            if ((neighbour.getFill() == this.getCurrentFill() || neighbour.isCaptured())) {
+                if (!visited[neighbour.getRow()][neighbour.getCol()]) {
+                    this.recursiveTileCapture(neighbour, visited);
+                }
+            } else {
+                this.setCompleted(false);
             }
         }
     }

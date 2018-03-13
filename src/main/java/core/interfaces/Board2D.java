@@ -8,13 +8,21 @@ public interface Board2D {
 
     int getColCount();
 
+    // @todo: Remove
     TileFillGenerator getFillGenerator();
 
-    public Tile2D[][]   getTiles();
+    public Tile2D[][] getTiles();
 
+    // @todo: Remove.
     TileFill getCurrentFill();
 
     int getMoveCount();
 
     void makeMove(TileFill tileFill);
+
+    boolean isCompleted();
+
+    GameStatus getGameStatus();
+
+    String getGameStatusMessage();
 }
