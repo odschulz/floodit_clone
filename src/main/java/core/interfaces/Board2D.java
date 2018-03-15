@@ -8,12 +8,8 @@ public interface Board2D {
 
     int getColCount();
 
-    // @todo: Remove
-    TileFillGenerator getFillGenerator();
-
     public Tile2D[][] getTiles();
 
-    // @todo: Remove.
     TileFill getCurrentFill();
 
     int getMoveCount();

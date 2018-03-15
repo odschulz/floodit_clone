@@ -30,7 +30,7 @@ public class CLIManager {
         Board2D board = GameManager.getBoard(DEFAULT_DIFFICULTY, TileFillDigit.values());
         Map<String, TileFill> tileFillCommandMapping = new HashMap<>();
         // @todo Command handling and difficulty manager.
-        for (TileFill fill : board.getFillGenerator().getTileFills()) {
+        for (TileFill fill : TileFillDigit.values()) {
             tileFillCommandMapping.put(fill.getValue(), fill);
         }
 

@@ -40,8 +40,7 @@ public abstract class AbstractBoard2D implements Board2D {
         return this.colCount;
     }
 
-    @Override
-    public TileFillGenerator getFillGenerator() {
+    TileFillGenerator getFillGenerator() {
         return this.fillGenerator;
     }
     @Override

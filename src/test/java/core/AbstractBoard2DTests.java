@@ -7,26 +7,25 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 public class AbstractBoard2DTests {
 
     @Test
     public void getGameStatusMessageTest() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         AbstractBoard2D board = Mockito.mock(AbstractBoard2D.class);
-        GamePlayMessage messanger = new DefaultGamePlayMessage();
-        Mockito.when(board.getMessages()).thenReturn(messanger);
+        GamePlayMessage messenger = new DefaultGamePlayMessage();
+        Mockito.when(board.getMessages()).thenReturn(messenger);
 
         Mockito.when(board.getMoveCount()).thenReturn(1);
         Mockito.when(board.getMaxMoves()).thenReturn(2);
         Mockito.when(board.isCompleted()).thenReturn(false);
-        Assert.assertEquals("Message should be for game in progress.", messanger.gameInProgressMessage(1, 2), board.getGameStatusMessage());
+        Assert.assertEquals("Message should be for game in progress.", messenger.gameInProgressMessage(1, 2), board.getGameStatusMessage());
 
         Mockito.when(board.getMoveCount()).thenReturn(2);
-        Assert.assertEquals("Message should be for lost game.", messanger.gameLoseMessage(2, 2), board.getGameStatusMessage());
+        Assert.assertEquals("Message should be for lost game.", messenger.gameLoseMessage(2, 2), board.getGameStatusMessage());
 
         Mockito.when(board.isCompleted()).thenReturn(true);
-        Assert.assertEquals("Message should be for won game.",messanger.gameWinMessage(2, 2), board.getGameStatusMessage());
+        Assert.assertEquals("Message should be for won game.",messenger.gameWinMessage(2, 2), board.getGameStatusMessage());
     }
 
     @Test
