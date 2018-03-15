@@ -1,6 +1,6 @@
 package ui.gui;
 
-import core.GameManager;
+import core.GameBoardFactory;
 import core.Tile2D;
 import core.config.Difficulty;
 import core.config.GameStatus;
@@ -24,6 +24,7 @@ public class GUIManager extends Application {
     private static final int BORDER_SIZE = TILE_SIZE - 1;
     private static final int BOARD_OFFSET = 30;
     private static final int COLOR_OPACITY = 1;
+    private static final Color BORDER_COLOR = Color.LIGHTGRAY;
 
     private int movesCount;
 
@@ -65,9 +66,9 @@ public class GUIManager extends Application {
     }
 
     private void setBoard() {
-        // @todo: Add factory for colors and ability for player to choose
+        // @todo: Add factory for colors and ability for player to choose.
         // a palette.
-        this.board = GameManager.getBoard(
+        this.board = GameBoardFactory.getBoard(
                 this.difficulty,
                 TileFillColor.values());
     }
@@ -93,8 +94,7 @@ public class GUIManager extends Application {
                 TileFill tileColor = tile.getFill();
                 Color color = Color.web(tileColor.getValue(), COLOR_OPACITY);
                 Rectangle border = new Rectangle(BORDER_SIZE, BORDER_SIZE, color);
-                // @todo Fix border.
-                border.setStroke(Color.LIGHTGRAY);
+                border.setStroke(BORDER_COLOR);
                 pane.getChildren().addAll(border);
 
                 pane.setTranslateX(tile.getCol() * TILE_SIZE + BOARD_OFFSET);

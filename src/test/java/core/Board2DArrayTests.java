@@ -85,9 +85,25 @@ public class Board2DArrayTests {
     }
 
     @Test
-    public void initBoard() {
-        // @todo
-        Assert.assertEquals(1, 1, 1);
+    public void initBoardCapturedTest() {
+        TileFill currentFill = this.board.getCurrentFill();
+        Tile2D[][] tiles = this.board.getTiles();
+        for (int row = 0; row < this.board.getRowCount(); row++) {
+            for (int col = 0; col < this.board.getColCount(); col++) {
+                if (tiles[row][col].getFill().getValue().equals(currentFill.getValue())) {
+                    Assert.assertEquals(String.format("Tile at row %d and col %d should be captured.", row, col), tiles[row][col].isCaptured(), true);
+                }
+            }
+        }
+    }
+
+    @Test
+    public void initBoardCurrentFillTest() {
+        Assert.assertEquals(
+                "Current tile file should be the same as the first tile.",
+                this.board.getTiles()[0][0].getFill().getValue(),
+                this.board.getCurrentFill().getValue()
+        );
     }
 
     @Test

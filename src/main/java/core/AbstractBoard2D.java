@@ -19,15 +19,23 @@ public abstract class AbstractBoard2D implements Board2D {
     private GamePlayMessage messages;
 
     AbstractBoard2D(int rowCount, int colCount, TileFillGenerator fillGenerator, int maxMoves) {
-        // @todo Validate x/y.
+        this(rowCount, colCount, fillGenerator, maxMoves, new DefaultGamePlayMessage());
+    }
+
+    AbstractBoard2D(int rowCount, int colCount, TileFillGenerator fillGenerator, int maxMoves, GamePlayMessage gamePlayMessages) {
+        if (rowCount < 1 || colCount < 1) {
+            throw new IllegalArgumentException("Invalid size of the boad. A board must have at least one row and column.");
+        }
+
+        if (maxMoves < 1) {
+            throw new IllegalArgumentException("Invalid number of max moves. Players must have at least one move to complete the board.");
+        }
         this.rowCount = rowCount;
         this.colCount = colCount;
         this.fillGenerator = fillGenerator;
         this.moveCount = 0;
-        // @todo: validate maxMoves.
         this.maxMoves = maxMoves;
-        // @todo fix multiple constructors.
-        this.setMessages(new DefaultGamePlayMessage());
+        this.setMessages(gamePlayMessages);
     }
 
     @Override

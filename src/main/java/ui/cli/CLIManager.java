@@ -1,6 +1,6 @@
 package ui.cli;
 
-import core.GameManager;
+import core.GameBoardFactory;
 import core.Tile2D;
 import core.config.Difficulty;
 import core.interfaces.Board2D;
@@ -27,9 +27,8 @@ public class CLIManager {
     }
 
     public void startGame() {
-        Board2D board = GameManager.getBoard(DEFAULT_DIFFICULTY, TileFillDigit.values());
+        Board2D board = GameBoardFactory.getBoard(DEFAULT_DIFFICULTY, TileFillDigit.values());
         Map<String, TileFill> tileFillCommandMapping = new HashMap<>();
-        // @todo Command handling and difficulty manager.
         for (TileFill fill : TileFillDigit.values()) {
             tileFillCommandMapping.put(fill.getValue(), fill);
         }
