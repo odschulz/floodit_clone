@@ -1,10 +1,14 @@
 import ui.cli.CLIManager;
 import ui.gui.GUIManager;
 
+import java.util.Arrays;
+
 public class Main {
     public static void main(String[] args) {
-//        GUIManager.startGame(args);
-        CLIManager cm = new CLIManager();
-        cm.startGame();
+        if (Arrays.asList(args).contains("cli")) {
+            CLIManager.startGame(args);
+        } else {
+            GUIManager.startGame(args);
+        }
     }
 }

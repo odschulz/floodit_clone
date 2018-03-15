@@ -7,6 +7,9 @@ import core.interfaces.GamePlayMessage;
 import core.interfaces.TileFill;
 import core.interfaces.TileFillGenerator;
 
+/**
+ * Common implementations for all 2D boards.
+ */
 public abstract class AbstractBoard2D implements Board2D {
     private final int rowCount;
     private final int colCount;

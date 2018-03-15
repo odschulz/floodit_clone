@@ -1,5 +1,8 @@
 package core.config;
 
+/**
+ * Predefined difficulty rules.
+ */
 public enum Difficulty {
     EASY(6, 6, 10), MEDIUM(14, 14, 25), HARD(26, 26, 46);
 

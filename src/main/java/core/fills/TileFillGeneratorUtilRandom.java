@@ -1,11 +1,12 @@
 package core.fills;
 
 import core.interfaces.TileFill;
-import core.interfaces.TileFillGenerator;
-import ui.cli.fills.TileFillDigit;
 
 import java.util.Random;
 
+/**
+ * Uses java.util.Random for random generation of fills.
+ */
 final class TileFillGeneratorUtilRandom extends TileFillGeneratorFactory {
 
     private final Random random;

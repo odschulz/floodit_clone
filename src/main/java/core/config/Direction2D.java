@@ -1,5 +1,8 @@
 package core.config;
 
+/**
+ * Two-dimensional matrix directions to show connection between elements.
+ */
 public enum Direction2D {
     RIGHT(0, 1), BOTTOM(1, 0), LEFT(0, -1), TOP(-1, 0);
 

@@ -18,15 +18,10 @@ public class CLIManager {
     private static final String EXIT_COMMAND = "exit";
     private static final Difficulty DEFAULT_DIFFICULTY = Difficulty.EASY;
     private static final int FILL_RENDER_PADDING = 3;
-    private final InputReader reader;
-    private final OutputWriter writer;
+    private static final InputReader reader = new ConsoleReader();
+    private static final OutputWriter writer = new ConsoleWriter();
 
-    public CLIManager() {
-        this.reader = new ConsoleReader();
-        this.writer = new ConsoleWriter();
-    }
-
-    public void startGame() {
+    public static void startGame(String[] args) {
         Board2D board = Board2DFactory.getBoard(DEFAULT_DIFFICULTY, TileFillDigit.values());
         Map<String, TileFill> tileFillCommandMapping = new HashMap<>();
         for (TileFill fill : TileFillDigit.values()) {
@@ -34,32 +29,32 @@ public class CLIManager {
         }
 
         while (true) {
-            this.drawBoard(board);
+            drawBoard(board);
             boolean completed = board.isCompleted();
             if (!completed) {
-                this.writer.writeLine("Please choose a fill by typing the corresponding letter. To exit type: " + EXIT_COMMAND);
+                writer.writeLine("Please choose a fill by typing the corresponding letter. To exit type: " + EXIT_COMMAND);
             }
-            this.writer.writeLine(board.getGameStatusMessage());
+            writer.writeLine(board.getGameStatusMessage());
             if (completed) {
                 break;
             }
             String command = reader.readLine();
 
             if (command.equals(EXIT_COMMAND)) {
-                this.writer.writeLine("Game ended, you coward!");
+                writer.writeLine("Game ended, you coward!");
                 break;
             }
 
             if (tileFillCommandMapping.containsKey(command)) {
                 board.makeMove(tileFillCommandMapping.get(command));
             } else {
-                this.writer.writeLine("Incorrect command");
+                writer.writeLine("Incorrect command");
             }
 
         }
     }
 
-    private void drawBoard(Board2D board) {
+    private static void drawBoard(Board2D board) {
         TileFill tileFill = null;
         for (Tile2D[] tileRow : board.getTiles()) {
             for (Tile2D tile : tileRow) {
@@ -67,11 +62,11 @@ public class CLIManager {
                     tileFill = tile.getFill();
                 }
 
-                this.writer.write(String.format("%1$" + FILL_RENDER_PADDING + "s", tile.getFill().getValue()));
+                writer.write(String.format("%1$" + FILL_RENDER_PADDING + "s", tile.getFill().getValue()));
             }
-            this.writer.writeLine("");
+            writer.writeLine("");
         }
 
-        this.writer.writeLine("");
+        writer.writeLine("");
     }
 }
