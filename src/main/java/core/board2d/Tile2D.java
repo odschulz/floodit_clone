@@ -1,4 +1,4 @@
-package core;
+package core.board2d;
 
 import core.interfaces.TileFill;
 

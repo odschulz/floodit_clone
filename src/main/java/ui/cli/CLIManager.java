@@ -1,7 +1,7 @@
 package ui.cli;
 
-import core.GameBoardFactory;
-import core.Tile2D;
+import core.board2d.Board2DFactory;
+import core.board2d.Tile2D;
 import core.config.Difficulty;
 import core.interfaces.Board2D;
 import core.interfaces.TileFill;
@@ -27,7 +27,7 @@ public class CLIManager {
     }
 
     public void startGame() {
-        Board2D board = GameBoardFactory.getBoard(DEFAULT_DIFFICULTY, TileFillDigit.values());
+        Board2D board = Board2DFactory.getBoard(DEFAULT_DIFFICULTY, TileFillDigit.values());
         Map<String, TileFill> tileFillCommandMapping = new HashMap<>();
         for (TileFill fill : TileFillDigit.values()) {
             tileFillCommandMapping.put(fill.getValue(), fill);

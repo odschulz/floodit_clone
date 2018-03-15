@@ -1,7 +1,7 @@
 package ui.gui;
 
-import core.GameBoardFactory;
-import core.Tile2D;
+import core.board2d.Board2DFactory;
+import core.board2d.Tile2D;
 import core.config.Difficulty;
 import core.config.GameStatus;
 import core.interfaces.Board2D;
@@ -68,7 +68,7 @@ public class GUIManager extends Application {
     private void setBoard() {
         // @todo: Add factory for colors and ability for player to choose.
         // a palette.
-        this.board = GameBoardFactory.getBoard(
+        this.board = Board2DFactory.getBoard(
                 this.difficulty,
                 TileFillColor.values());
     }

@@ -1,5 +1,6 @@
-package core;
+package core.board2d;
 
+import core.DefaultGamePlayMessage;
 import core.config.GameStatus;
 import core.interfaces.GamePlayMessage;
 import org.junit.Assert;

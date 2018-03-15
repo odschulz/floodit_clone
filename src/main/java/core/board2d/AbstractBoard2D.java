@@ -1,6 +1,6 @@
-package core;
+package core.board2d;
 
-import core.config.Difficulty;
+import core.DefaultGamePlayMessage;
 import core.config.GameStatus;
 import core.interfaces.Board2D;
 import core.interfaces.GamePlayMessage;

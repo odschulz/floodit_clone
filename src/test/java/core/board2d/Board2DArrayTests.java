@@ -1,4 +1,4 @@
-package core;
+package core.board2d;
 
 import core.config.Direction2D;
 import core.interfaces.Board2D;
@@ -11,12 +11,9 @@ import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Optional;
 
 public class Board2DArrayTests {
     private static final int ROW_SIZE = 3;

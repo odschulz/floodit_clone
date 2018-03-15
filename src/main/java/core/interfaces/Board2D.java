@@ -1,6 +1,6 @@
 package core.interfaces;
 
-import core.Tile2D;
+import core.board2d.Tile2D;
 import core.config.GameStatus;
 
 public interface Board2D {
