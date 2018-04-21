@@ -26,8 +26,6 @@ public class GUIManager extends Application {
     private static final int COLOR_OPACITY = 1;
     private static final Color BORDER_COLOR = Color.LIGHTGRAY;
 
-    private int movesCount;
-
     private Difficulty difficulty;
 
     private Board2D board;
@@ -41,7 +39,6 @@ public class GUIManager extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        this.movesCount = 0;
         Difficulty defaultDifficulty = Difficulty.MEDIUM;
 
         this.difficulty = defaultDifficulty;
@@ -74,7 +71,6 @@ public class GUIManager extends Application {
     }
 
     private void resetGame() {
-        this.movesCount = 0;
         this.setBoard();
         this.scene.setRoot(this.drawBoard());
     }
@@ -125,7 +121,6 @@ public class GUIManager extends Application {
 
     private void makeMove(TileFill tileFill) {
         this.board.makeMove(tileFill);
-        this.movesCount++;
         this.scene.setRoot(this.drawBoard());
     }
 
