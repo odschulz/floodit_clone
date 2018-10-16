@@ -2,10 +2,14 @@ package core.board2d;
 
 import core.DefaultGamePlayMessage;
 import core.config.GameStatus;
+import core.fills.TileFillWrapper;
 import core.interfaces.Board2D;
 import core.interfaces.GamePlayMessage;
 import core.interfaces.TileFill;
 import core.interfaces.TileFillGenerator;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Common implementations for all 2D boards.
@@ -20,6 +24,7 @@ public abstract class AbstractBoard2D implements Board2D {
     private TileFill currentFill;
     private boolean isCompleted;
     private GamePlayMessage messages;
+    private Map<String, TileFill> wrappedTileFills;
 
     AbstractBoard2D(int rowCount, int colCount, TileFillGenerator fillGenerator, int maxMoves) {
         this(rowCount, colCount, fillGenerator, maxMoves, new DefaultGamePlayMessage());
@@ -39,6 +44,7 @@ public abstract class AbstractBoard2D implements Board2D {
         this.moveCount = 0;
         this.maxMoves = maxMoves;
         this.setMessages(gamePlayMessages);
+        this.setWrappedTileFills();
     }
 
     @Override
@@ -71,7 +77,7 @@ public abstract class AbstractBoard2D implements Board2D {
     @Override
     public final void makeMove(TileFill tileFill) {
         this.addMoveCount();
-        this.setCurrentFill(tileFill);
+        this.setCurrentFill(this.getWrappedTileFill(tileFill));
         this.captureTiles();
     }
 
@@ -136,6 +142,21 @@ public abstract class AbstractBoard2D implements Board2D {
 
     private void addMoveCount() {
         this.moveCount++;
+    }
+
+    private void setWrappedTileFills() {
+        this.wrappedTileFills = new HashMap<>();
+        for (TileFill tileFill : getFillGenerator().getTileFills()) {
+            this.wrappedTileFills.put(tileFill.getValue(), tileFill);
+        }
+    }
+
+    private TileFill getWrappedTileFill(TileFill tileFill) {
+        if (!this.wrappedTileFills.containsKey(tileFill.getValue())) {
+            throw new IllegalArgumentException("TileFills array cannot contain null values.");
+        }
+
+        return  this.wrappedTileFills.get(tileFill.getValue());
     }
 
 }

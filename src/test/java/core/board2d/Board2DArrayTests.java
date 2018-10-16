@@ -88,7 +88,7 @@ public class Board2DArrayTests {
         for (int row = 0; row < this.board.getRowCount(); row++) {
             for (int col = 0; col < this.board.getColCount(); col++) {
                 if (tiles[row][col].getFill().getValue().equals(currentFill.getValue())) {
-                    Assert.assertEquals(String.format("Tile at row %d and col %d should be captured.", row, col), tiles[row][col].isCaptured(), true);
+                    Assert.assertTrue(String.format("Tile at row %d and col %d should be captured.", row, col), tiles[row][col].isCaptured());
                 }
             }
         }
@@ -112,12 +112,12 @@ public class Board2DArrayTests {
 
         Assert.assertEquals("Incorrect amount of neighbouring tiles", 2, neighbourTiles.size());
 
-        Assert.assertEquals("Right neighbour tile not found.", true, neighbourTiles.containsKey(Direction2D.RIGHT));
+        Assert.assertTrue("Right neighbour tile not found.", neighbourTiles.containsKey(Direction2D.RIGHT));
         Tile2D rightNeighbour = neighbourTiles.get(Direction2D.RIGHT);
         Assert.assertEquals("Right neighbour has incorrect row.", LEFT_CORNER_TILE_ROW, rightNeighbour.getRow());
         Assert.assertEquals("Right neighbour has incorrect col.", LEFT_CORNER_TILE_COL + 1, rightNeighbour.getCol());
 
-        Assert.assertEquals("Bottom neighbour tile not found.", true, neighbourTiles.containsKey(Direction2D.BOTTOM));
+        Assert.assertTrue("Bottom neighbour tile not found.", neighbourTiles.containsKey(Direction2D.BOTTOM));
         Tile2D bottomNeighbour = neighbourTiles.get(Direction2D.BOTTOM);
         Assert.assertEquals("Bottom neighbour has incorrect row.", LEFT_CORNER_TILE_ROW + 1, bottomNeighbour.getRow());
         Assert.assertEquals("Bottom neighbour has incorrect col.", LEFT_CORNER_TILE_COL, bottomNeighbour.getCol());
@@ -132,22 +132,22 @@ public class Board2DArrayTests {
 
         Assert.assertEquals("Incorrect amount of neighbouring tiles", 4, neighbourTiles.size());
 
-        Assert.assertEquals("Right neighbour tile not found.", true, neighbourTiles.containsKey(Direction2D.RIGHT));
+        Assert.assertTrue("Right neighbour tile not found.", neighbourTiles.containsKey(Direction2D.RIGHT));
         Tile2D rightNeighbour = neighbourTiles.get(Direction2D.RIGHT);
         Assert.assertEquals("Right neighbour has incorrect row.", MIDDLE_TILE_ROW, rightNeighbour.getRow());
         Assert.assertEquals("Right neighbour has incorrect col.", MIDDLE_TILE_COL + 1, rightNeighbour.getCol());
 
-        Assert.assertEquals("Bottom neighbour tile not found.", true, neighbourTiles.containsKey(Direction2D.BOTTOM));
+        Assert.assertTrue("Bottom neighbour tile not found.", neighbourTiles.containsKey(Direction2D.BOTTOM));
         Tile2D bottomNeighbour = neighbourTiles.get(Direction2D.BOTTOM);
         Assert.assertEquals("Bottom neighbour has incorrect row.", MIDDLE_TILE_ROW + 1, bottomNeighbour.getRow());
         Assert.assertEquals("Bottom neighbour has incorrect col.", MIDDLE_TILE_COL, bottomNeighbour.getCol());
 
-        Assert.assertEquals("Left neighbour tile not found.", true, neighbourTiles.containsKey(Direction2D.LEFT));
+        Assert.assertTrue("Left neighbour tile not found.", neighbourTiles.containsKey(Direction2D.LEFT));
         Tile2D leftNeighbour = neighbourTiles.get(Direction2D.LEFT);
         Assert.assertEquals("Left neighbour has incorrect row.", MIDDLE_TILE_ROW, leftNeighbour.getRow());
         Assert.assertEquals("Left neighbour has incorrect col.", MIDDLE_TILE_COL - 1, leftNeighbour.getCol());
 
-        Assert.assertEquals("Top neighbour tile not found.", true, neighbourTiles.containsKey(Direction2D.TOP));
+        Assert.assertTrue("Top neighbour tile not found.", neighbourTiles.containsKey(Direction2D.TOP));
         Tile2D topNeighbour = neighbourTiles.get(Direction2D.TOP);
         Assert.assertEquals("Top neighbour has incorrect row.", MIDDLE_TILE_ROW - 1, topNeighbour.getRow());
         Assert.assertEquals("Top neighbour has incorrect col.", MIDDLE_TILE_COL, topNeighbour.getCol());
@@ -159,10 +159,10 @@ public class Board2DArrayTests {
         for (Tile2D[] tilesRow : this.board.getTiles()) {
             for (Tile2D tile : tilesRow) {
                 if (this.tileFillsToBeCaptured[tile.getRow()][tile.getCol()]) {
-                    Assert.assertEquals("Tile has not been captured.", true, tile.isCaptured());
+                    Assert.assertTrue("Tile has not been captured.", tile.isCaptured());
                     Assert.assertEquals("Tile color should be the same as the one made in this move.", this.changeFill.getValue(), tile.getFill().getValue());
                 } else {
-                    Assert.assertEquals("Tile should not be captured.", false, tile.isCaptured());
+                    Assert.assertFalse("Tile should not be captured.", tile.isCaptured());
                     Assert.assertNotEquals("Tile color should be different than the one that was made in this move.",  this.changeFill.getValue(), tile.getFill().getValue());
                 }
             }
@@ -170,16 +170,45 @@ public class Board2DArrayTests {
     }
 
     @Test
+    public void makeMoveDownTest() {
+        this.board.makeMove(this.lastFill);
+        Tile2D[][] tiles = board.getTiles();
+
+        int capturedRow = 1;
+        int capturedCol = 0;
+        int notCapturedRow = 0;
+        int notCapturedCol = 1;
+
+        Assert.assertTrue(
+                String.format(
+                        "Tile at row %d and col %d should be captured.",
+                        capturedRow,
+                        capturedCol
+                ),
+                tiles[capturedRow][capturedCol].isCaptured()
+        );
+
+        Assert.assertFalse(
+                String.format(
+                        "Tile at row %d and col %d should not be captured.",
+                        notCapturedRow,
+                        notCapturedCol
+                ),
+                tiles[notCapturedRow][notCapturedCol].isCaptured()
+        );
+    }
+
+    @Test
     public void testIsCompleted() {
         this.board.makeMove(this.changeFill);
         this.board.makeMove(this.lastFill);
-        Assert.assertEquals("Board should be completed.", true, this.board.isCompleted());
+        Assert.assertTrue("Board should be completed.", this.board.isCompleted());
     }
 
     @Test
     public void testIsNotCompleted() {
         this.board.makeMove(this.changeFill);
-        Assert.assertEquals("Board should not be completed.", false, this.board.isCompleted());
+        Assert.assertFalse("Board should not be completed.", this.board.isCompleted());
     }
 
 }

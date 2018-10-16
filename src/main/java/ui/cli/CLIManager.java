@@ -18,8 +18,12 @@ public class CLIManager {
     private static final String EXIT_COMMAND = "exit";
     private static final Difficulty DEFAULT_DIFFICULTY = Difficulty.EASY;
     private static final int FILL_RENDER_PADDING = 3;
-    private static final InputReader reader = new ConsoleReader();
-    private static final OutputWriter writer = new ConsoleWriter();
+    // @todo: Refactor hardcoded logic.
+    private static final InputReader READER = new ConsoleReader();
+    private static final OutputWriter WRITER = new ConsoleWriter();
+    private static final String MESSAGE_END = "Game ended, you coward!";
+    private static final String MESSAGE_ACT = "Please choose a fill by typing the corresponding letter. To exit type: " + EXIT_COMMAND;
+    private static final String MESSAGE_WRONG_COMMAND = "Wrong command! Do 50 pushups and try again!";
 
     public static void startGame(String[] args) {
         Board2D board = Board2DFactory.getBoard(DEFAULT_DIFFICULTY, TileFillDigit.values());
@@ -32,23 +36,23 @@ public class CLIManager {
             drawBoard(board);
             boolean completed = board.isCompleted();
             if (!completed) {
-                writer.writeLine("Please choose a fill by typing the corresponding letter. To exit type: " + EXIT_COMMAND);
+                WRITER.writeLine(MESSAGE_ACT);
             }
-            writer.writeLine(board.getGameStatusMessage());
+            WRITER.writeLine(board.getGameStatusMessage());
             if (completed) {
                 break;
             }
-            String command = reader.readLine();
+            String command = READER.readLine();
 
             if (command.equals(EXIT_COMMAND)) {
-                writer.writeLine("Game ended, you coward!");
+                WRITER.writeLine(MESSAGE_END);
                 break;
             }
 
             if (tileFillCommandMapping.containsKey(command)) {
                 board.makeMove(tileFillCommandMapping.get(command));
             } else {
-                writer.writeLine("Incorrect command");
+                WRITER.writeLine(MESSAGE_WRONG_COMMAND);
             }
 
         }
@@ -62,11 +66,11 @@ public class CLIManager {
                     tileFill = tile.getFill();
                 }
 
-                writer.write(String.format("%1$" + FILL_RENDER_PADDING + "s", tile.getFill().getValue()));
+                WRITER.write(String.format("%1$" + FILL_RENDER_PADDING + "s", tile.getFill().getValue()));
             }
-            writer.writeLine("");
+            WRITER.writeLine("");
         }
 
-        writer.writeLine("");
+        WRITER.writeLine("");
     }
 }

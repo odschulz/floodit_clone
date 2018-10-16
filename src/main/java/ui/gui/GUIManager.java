@@ -96,7 +96,7 @@ public class GUIManager extends Application {
                 pane.setTranslateX(tile.getCol() * TILE_SIZE + BOARD_OFFSET);
                 pane.setTranslateY(tile.getRow() * TILE_SIZE + BOARD_OFFSET);
 
-                if (tile.getFill() != this.board.getCurrentFill()) {
+                if (!tile.getFill().getValue().equals(this.board.getCurrentFill().getValue())) {
                     pane.setOnMouseClicked(e -> this.makeMove(tile.getFill()));
                 }
 

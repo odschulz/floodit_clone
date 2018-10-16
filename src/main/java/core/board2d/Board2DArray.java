@@ -98,13 +98,13 @@ final class Board2DArray extends AbstractBoard2D {
             tile.setCaptured(true);
         }
 
-        if (tile.getFill() != this.getCurrentFill()) {
+        if (!tile.getFill().getValue().equals(this.getCurrentFill().getValue())) {
             tile.setFill(this.getCurrentFill());
         }
         visited[tileRow][tileCol] = true;
 
         for (Tile2D neighbour : this.getNeighbouringTiles(tileRow, tileCol).values()) {
-            if ((neighbour.getFill() == this.getCurrentFill() || neighbour.isCaptured())) {
+            if ((neighbour.getFill().getValue().equals(this.getCurrentFill().getValue()) || neighbour.isCaptured())) {
                 if (!visited[neighbour.getRow()][neighbour.getCol()]) {
                     this.recursiveTileCapture(neighbour, visited);
                 }
